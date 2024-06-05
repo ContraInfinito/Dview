@@ -1,6 +1,6 @@
 import DerivAPIBasic from "https://cdn.skypack.dev/@deriv/deriv-api/dist/DerivAPIBasic";
 
-const app_id = 62002; 
+const app_id = 62002;
 const connection = new WebSocket(`wss://ws.derivws.com/websockets/v3?app_id=${app_id}`);
 const api = new DerivAPIBasic({ connection });
 
@@ -8,6 +8,7 @@ let token = "";
 let numberOfBuys = 0;
 let symbol = "BOOM500";
 let entryPrice = 2000;
+let currentBuyCount = 0;
 
 const contracts_for_symbol_request = {
     contracts_for: symbol,
@@ -38,27 +39,7 @@ let buy_contract_request = {
 const outputDiv = document.getElementById("output");
 
 const resetState = () => {
-    token = "";
-    numberOfBuys = 0;
-    symbol = "BOOM500";
-    entryPrice = 2000;
-    price_proposal = {
-        amount: 2000,
-        basis: "stake",
-        contract_type: "MULTUP",
-        currency: "USD",
-        duration_unit: "s",
-        multiplier: 400,
-        product_type: "basic",
-        proposal: 1,
-        req_id: 11,
-        symbol: symbol,
-    };
-    buy_contract_request = {
-        buy: "",
-        price: 2000,
-        req_id: 12,
-    };
+    currentBuyCount = 0;
 };
 
 const displayMessage = (message) => {
@@ -115,14 +96,22 @@ const buyContractResponse = async (res) => {
         displayMessage("Buy successful.");
     }
     connection.removeEventListener("message", buyContractResponse);
+
+    currentBuyCount++;
+    if (currentBuyCount < numberOfBuys) {
+        makeSingleBuy();
+    } else {
+        resetState();
+    }
+};
+
+const makeSingleBuy = async () => {
+    connection.addEventListener("message", priceProposalResponse);
+    await api.proposal(price_proposal);
 };
 
 const makeMultipleBuys = async () => {
-    for (let i = 0; i < numberOfBuys; i++) {
-        connection.addEventListener("message", priceProposalResponse);
-        await api.proposal(price_proposal);
-        await new Promise(resolve => setTimeout(resolve, 1000)); // Wait one second between proposals
-    }
+    await makeSingleBuy();
 };
 
 const getContractsForSymbol = async () => {
