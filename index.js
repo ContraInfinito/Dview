@@ -1,6 +1,6 @@
 import DerivAPIBasic from "https://cdn.skypack.dev/@deriv/deriv-api/dist/DerivAPIBasic";
 
-const app_id = 62002;
+const app_id = 62002; 
 const connection = new WebSocket(`wss://ws.derivws.com/websockets/v3?app_id=${app_id}`);
 const api = new DerivAPIBasic({ connection });
 
@@ -87,11 +87,7 @@ const contractsForSymbolResponse = async (res) => {
         await api.disconnect();
     } else if (data.msg_type === "contracts_for") {
         connection.removeEventListener("message", contractsForSymbolResponse);
-        for (let i = 0; i < numberOfBuys; i++) {
-            connection.addEventListener("message", priceProposalResponse);
-            await api.proposal(price_proposal);
-            await new Promise(resolve => setTimeout(resolve, 1000)); // Wait one second between proposals
-        }
+        makeMultipleBuys();
     }
 };
 
@@ -119,8 +115,14 @@ const buyContractResponse = async (res) => {
         displayMessage("Buy successful.");
     }
     connection.removeEventListener("message", buyContractResponse);
-    await api.disconnect();
-    resetState(); // Reset state after each trading session
+};
+
+const makeMultipleBuys = async () => {
+    for (let i = 0; i < numberOfBuys; i++) {
+        connection.addEventListener("message", priceProposalResponse);
+        await api.proposal(price_proposal);
+        await new Promise(resolve => setTimeout(resolve, 1000)); // Wait one second between proposals
+    }
 };
 
 const getContractsForSymbol = async () => {
