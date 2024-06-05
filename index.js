@@ -99,12 +99,11 @@ const buyContractResponse = async (res) => {
 
     currentBuyCount++;
     if (currentBuyCount < numberOfBuys) {
-        makeSingleBuy();
+        setTimeout(makeSingleBuy, 1000); // Agrega un retraso antes de hacer la siguiente compra
     } else {
         resetState();
     }
 };
-
 const makeSingleBuy = async () => {
     connection.addEventListener("message", priceProposalResponse);
     await api.proposal(price_proposal);
