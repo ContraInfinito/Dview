@@ -139,8 +139,8 @@ const startTrading = async () => {
     price_proposal.amount = entryPrice; // Use the user-defined entry price
     buy_contract_request.price = entryPrice;
 
-    await authenticate();
+    getContractsForSymbol(); // Llama a getContractsForSymbol directamente aquí
 };
 
-document.getElementById("checkToken").addEventListener("click", checkToken);
+document.getElementById("checkToken").addEventListener("click", authenticate); // Solo autentica el token aquí
 document.getElementById("startTrading").addEventListener("click", startTrading);
