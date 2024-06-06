@@ -1,4 +1,3 @@
-import { debugErrorMap } from "firebase/auth";
 import DerivAPIBasic from "https://cdn.skypack.dev/@deriv/deriv-api/dist/DerivAPIBasic";
 
 const app_id = 62002;
@@ -138,7 +137,6 @@ const getContractsForSymbol = async () => {
 };
 
 const authenticate = async () => {
-    debugger
     connection.addEventListener("message", loginResponse);
     await api.authorize(token);
 };
