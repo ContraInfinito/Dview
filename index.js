@@ -129,19 +129,5 @@ const authenticate = async () => {
     await api.authorize(token);
 };
 
-const startTrading = async () => {
-    token = document.getElementById("token").value;
-    symbol = document.getElementById("symbol").value;
-    entryPrice = parseFloat(document.getElementById("price").value);
-    numberOfBuys = parseInt(document.getElementById("numberOfBuys").value);
-
-    price_proposal.contract_type = symbol.startsWith("BOOM") ? "MULTUP" : "MULTDOWN";
-    price_proposal.symbol = symbol;
-    price_proposal.amount = entryPrice; // Use the user-defined entry price
-    buy_contract_request.price = entryPrice;
-
-    getContractsForSymbol(); // Llama a getContractsForSymbol directamente aquí
-};
-
 document.getElementById("checkToken").addEventListener("click", authenticate); // Solo autentica el token aquí
-document.getElementById("startTrading").addEventListener("click", startTrading);
+document.getElementById("startTrading").addEventListener("click", getContractsForSymbol); // Inicia las compras aquí
