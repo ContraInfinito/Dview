@@ -38,17 +38,17 @@ let buy_contract_request = {
 
 const outputDiv = document.getElementById("output");
 
+const resetState = () => {
+    currentBuyCount = 0;
+};
+
 const clearMessage = () => {
     outputDiv.innerHTML = '';
 };
 
 const displayMessage = (message) => {
-    clearMessage();
+    clearMessage(); // Limpia la terminal antes de mostrar un nuevo mensaje
     outputDiv.innerHTML += `<p>${message}</p>`;
-};
-
-const resetState = () => {
-    currentBuyCount = 0;
 };
 
 const loginResponse = async (res) => {
@@ -60,18 +60,6 @@ const loginResponse = async (res) => {
     } else if (data.msg_type === "authorize") {
         displayMessage("Authentication successful.");
         connection.removeEventListener("message", loginResponse);
-    }
-};
-
-const loginAndStartTradingResponse = async (res) => {
-    const data = JSON.parse(res.data);
-
-    if (data.error !== undefined) {
-        displayMessage(`Authentication unsuccessful: ${data.error.message}`);
-        await api.disconnect();
-    } else if (data.msg_type === "authorize") {
-        displayMessage("Authentication successful.");
-        connection.removeEventListener("message", loginAndStartTradingResponse);
         getContractsForSymbol();
     }
 };
@@ -121,7 +109,6 @@ const buyContractResponse = async (res) => {
         resetState();
     }
 };
-
 const makeSingleBuy = async () => {
     connection.addEventListener("message", priceProposalResponse);
     await api.proposal(price_proposal);
@@ -141,7 +128,14 @@ const authenticate = async () => {
     await api.authorize(token);
 };
 
-const authenticateAndStartTrading = async () => {
+const checkToken = async () => {
+    token = document.getElementById("token").value;
+    await authenticate();
+};
+
+
+
+const startTrading = async () => {
     token = document.getElementById("token").value;
     symbol = document.getElementById("symbol").value;
     entryPrice = parseFloat(document.getElementById("price").value);
@@ -152,9 +146,11 @@ const authenticateAndStartTrading = async () => {
     price_proposal.amount = entryPrice; // Use the user-defined entry price
     buy_contract_request.price = entryPrice;
 
-    connection.addEventListener("message", loginAndStartTradingResponse); // Agrega la autenticación aquí
+    connection.addEventListener("message", loginResponse); // Agrega la autenticación aquí
     await api.authorize(token); // Autentica el token aquí
 };
 
-document.getElementById("checkToken").addEventListener("click", authenticate);
-document.getElementById("startTrading").addEventListener("click", authenticateAndStartTrading);
+document.getElementById("checkToken").addEventListener("click", checkToken);
+document.getElementById("startTrading").addEventListener("click", startTrading);
+
+
