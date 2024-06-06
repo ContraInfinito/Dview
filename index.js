@@ -42,7 +42,12 @@ const resetState = () => {
     currentBuyCount = 0;
 };
 
+const clearMessage = () => {
+    outputDiv.innerHTML = '';
+};
+
 const displayMessage = (message) => {
+    clearMessage(); // Limpia la terminal antes de mostrar un nuevo mensaje
     outputDiv.innerHTML += `<p>${message}</p>`;
 };
 
