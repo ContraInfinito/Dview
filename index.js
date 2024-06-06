@@ -60,7 +60,6 @@ const loginResponse = async (res) => {
     } else if (data.msg_type === "authorize") {
         displayMessage("Authentication successful.");
         connection.removeEventListener("message", loginResponse);
-        getContractsForSymbol();
     }
 };
 
@@ -109,6 +108,7 @@ const buyContractResponse = async (res) => {
         resetState();
     }
 };
+
 const makeSingleBuy = async () => {
     connection.addEventListener("message", priceProposalResponse);
     await api.proposal(price_proposal);
@@ -124,16 +124,10 @@ const getContractsForSymbol = async () => {
 };
 
 const authenticate = async () => {
+    token = document.getElementById("token").value;
     connection.addEventListener("message", loginResponse);
     await api.authorize(token);
 };
-
-const checkToken = async () => {
-    token = document.getElementById("token").value;
-    await authenticate();
-};
-
-
 
 const startTrading = async () => {
     token = document.getElementById("token").value;
@@ -146,11 +140,8 @@ const startTrading = async () => {
     price_proposal.amount = entryPrice; // Use the user-defined entry price
     buy_contract_request.price = entryPrice;
 
-    connection.addEventListener("message", loginResponse); // Agrega la autenticación aquí
-    await api.authorize(token); // Autentica el token aquí
+    getContractsForSymbol(); // Llama a getContractsForSymbol directamente aquí
 };
 
-document.getElementById("checkToken").addEventListener("click", checkToken);
+document.getElementById("checkToken").addEventListener("click", authenticate); // Solo autentica el token aquí
 document.getElementById("startTrading").addEventListener("click", startTrading);
-
-
