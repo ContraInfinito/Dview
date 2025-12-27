@@ -1,0 +1,10 @@
+* { box-sizing: border-box; }
+body { margin: 0; font-family: Arial, sans-serif; background: #0f141c; color: #e8edf5; }
+a { color: #7ac7ff; }
+.app { padding: 16px; max-width: 1200px; margin: 0 auto; }
+.header { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-bottom: 12px; }
+.button { padding: 8px 12px; background: #1f2a3a; color: #e8edf5; border: 1px solid #2c3b52; border-radius: 6px; cursor: pointer; }
+.button.active { background: #2f80ed; border-color: #2f80ed; }
+.panel { background: #121826; border: 1px solid #1f2a3a; border-radius: 8px; padding: 12px; }
+.chart-container { height: 520px; }
+textarea { width: 100%; min-height: 140px; background: #0f141c; color: #e8edf5; border: 1px solid #2c3b52; border-radius: 6px; padding: 8px; }
